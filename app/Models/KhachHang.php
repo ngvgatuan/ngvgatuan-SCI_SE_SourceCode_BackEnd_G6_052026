@@ -20,5 +20,6 @@ class KhachHang extends Authenticatable
         'password',
         'is_blocked',
         'is_active',
+        'hash_active'
     ];
 }
