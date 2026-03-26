@@ -2,64 +2,53 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ThemMoiKhachHangRequest;
+use App\Mail\KichHoatTaiKhoan;
 use App\Models\KhachHang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class KhachHangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function kichHoat($hash_active)
     {
-        //
+        $KhachHang = KhachHang::where('hash_active', $hash_active)->first();
+        if (!$KhachHang) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tài khoản không tồn tại'
+            ]);
+        } else if ($KhachHang->is_active == 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tài khoản đã được kích hoạt trước đó'
+            ]);
+        } else {
+            $KhachHang->is_active = 1;
+            $KhachHang->hash_active = null;
+            $KhachHang->save();
+            return redirect('http://localhost:3000/'); //route tới trang xác nhận thành công nhé
+            //     return response()->json([
+            //         'status' => true,
+            //         'message' => 'Kích hoạt tài khoản thành công!'
+            //     ]);
+        }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(ThemMoiKhachHangRequest $request)
     {
-        //
-    }
+        $KhachHang = KhachHang::create([
+            'ten_khach_hang' => $request->ten_khach_hang,
+            'so_dien_thoai'  => $request->so_dien_thoai,
+            'email'          => $request->email,
+            'password'       => bcrypt($request->password),
+            'hash_active'    => Str::uuid(),
+        ]);
+        Mail::to($KhachHang->email)->send(new KichHoatTaiKhoan($KhachHang->hash_active, $KhachHang->ten_khach_hang));
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(KhachHang $khachHang)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(KhachHang $khachHang)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, KhachHang $khachHang)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(KhachHang $khachHang)
-    {
-        //
+        return response()->json([
+            'message' => 'Tạo tài khoản thành công!',
+            'status'  => true
+        ]);
     }
 }

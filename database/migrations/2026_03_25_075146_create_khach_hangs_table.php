@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('ten_khach_hang');
             $table->string('so_dien_thoai');
-            $table->string('avatar');
+            $table->string('avatar')->default(0);
             $table->string('email');
             $table->string('password');
-            $table->integer('is_blocked');
-            $table->integer('is_active');
+            $table->integer('is_blocked')->default(0); //không bị block
+            $table->integer('is_active')->default(0); //chưa xác nhận mail chưa active
+            $table->string('hash_active')->nullable();
             $table->timestamps();
         });
     }
