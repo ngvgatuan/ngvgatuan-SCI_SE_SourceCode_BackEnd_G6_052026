@@ -14,26 +14,20 @@ class NhaCungCapController extends Controller
 {
     public function kichHoat($hash_active)
     {
-        $NhaCungCap = NhaCungCap::where('hash_active', $hash_active)->first();
-        if (!$NhaCungCap) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Tài khoản không tồn tại'
-            ]);
-        } else if ($NhaCungCap->is_active == 1) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Tài khoản đã được kích hoạt trước đó'
-            ]);
-        } else {
+        $NhaCungCap = NhaCungCap::where('hash_active', $hash_active)->where('is_active', 0)->first();
+        if ($NhaCungCap) {
             $NhaCungCap->is_active = 1;
             $NhaCungCap->hash_active = null;
             $NhaCungCap->save();
-            return redirect('http://localhost:3000/'); //route tới trang xác nhận thành công nhé
-            //     return response()->json([
-            //         'status' => true,
-            //         'message' => 'Kích hoạt tài khoản thành công!'
-            //     ]);
+            return response()->json([
+                'status' => true,
+                'message' => "Bạn đã kích hoạt tài khoản thành công!"
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Tài khoản bạn đã được kích hoạt hoặc không tồn tại!"
+            ]);
         }
     }
     public function create(ThemMoiNCCRequest $request)
