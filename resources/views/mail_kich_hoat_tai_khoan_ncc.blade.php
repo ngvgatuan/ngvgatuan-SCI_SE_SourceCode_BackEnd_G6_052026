@@ -37,7 +37,7 @@
 
                             <!-- Button -->
                             <div style="text-align:center;margin:30px 0;">
-                                <a href="{{ url('api/nha-cung-cap/kich-hoat-tai-khoan/'.$hash_active) }}"
+                                <a href="http://127.0.0.1:8000/api/nha-cung-cap/kich-hoat-tai-khoan/{{ $hash_active }}"
                                    style="background:#0066FF;color:#fff;padding:15px 25px;
                                    text-decoration:none;border-radius:5px;font-size:16px;">
                                     KÍCH HOẠT TÀI KHOẢN
@@ -49,7 +49,7 @@
                             </p>
 
                             <p style="word-break:break-all;">
-                                <a href="{{ url('api/nha-cung-cap/kich-hoat-tai-khoan/'.$hash_active) }}">
+                                <a href="http://127.0.0.1:8000/api/nha-cung-cap/kich-hoat-tai-khoan/{{ $hash_active }}">
                                     Xác nhận tại đây nhé!
                                 </a>
                             </p>
