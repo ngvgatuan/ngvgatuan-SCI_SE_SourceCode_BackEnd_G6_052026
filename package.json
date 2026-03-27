@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "dev-all": "start cmd /k php artisan serve && start cmd /k php artisan queue:work"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

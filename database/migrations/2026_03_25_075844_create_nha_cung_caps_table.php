@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('ten_nha_cung_cap');
             $table->string('so_dien_thoai');
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
             $table->string('email');
             $table->string('password');
-            $table->string('dia_chi');
-            $table->integer('is_blocked');
-            $table->integer('is_active');
+            $table->string('dia_chi')->nullable();
+            $table->integer('is_blocked')->default(0);
+            $table->integer('is_active')->default(0);
+            $table->string('hash_active')->nullable();
             $table->timestamps();
         });
     }

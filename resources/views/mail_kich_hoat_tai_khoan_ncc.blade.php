@@ -28,7 +28,7 @@
                             <h2 style="margin-top:0;">Xin chào {{ $name }}</h2>
 
                             <p>
-                                Cảm ơn bạn đã đăng ký tài khoản tại hệ thống của chúng tôi.
+                                Cảm ơn bạn đã đăng ký trở thành nhà cung cấp dịch vụ tại hệ thống của chúng tôi.
                             </p>
 
                             <p>
@@ -37,7 +37,7 @@
 
                             <!-- Button -->
                             <div style="text-align:center;margin:30px 0;">
-                                <a href="{{ url('api/kich-hoat-tai-khoan/'.$hash_active) }}"
+                                <a href="{{ url('api/nha-cung-cap/kich-hoat-tai-khoan/'.$hash_active) }}"
                                    style="background:#0066FF;color:#fff;padding:15px 25px;
                                    text-decoration:none;border-radius:5px;font-size:16px;">
                                     KÍCH HOẠT TÀI KHOẢN
@@ -49,7 +49,7 @@
                             </p>
 
                             <p style="word-break:break-all;">
-                                <a href="{{ url('api/kich-hoat-tai-khoan/'.$hash_active) }}">
+                                <a href="{{ url('api/nha-cung-cap/kich-hoat-tai-khoan/'.$hash_active) }}">
                                     Xác nhận tại đây nhé!
                                 </a>
                             </p>

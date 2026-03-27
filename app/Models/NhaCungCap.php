@@ -21,5 +21,6 @@ class NhaCungCap extends Authenticatable
         'dia_chi',
         'is_blocked',
         'is_active',
+        'hash_active'
     ];
 }

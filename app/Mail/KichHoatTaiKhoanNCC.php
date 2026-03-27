@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class KichHoatTaiKhoan extends Mailable implements ShouldQueue
+class KichHoatTaiKhoanNCC extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
     public $hash_active;
@@ -24,6 +24,6 @@ class KichHoatTaiKhoan extends Mailable implements ShouldQueue
 
     public function build()
     {
-        return $this->subject("Kích Hoạt Tài Khoản Trên Hệ Thống")->view('mail_kich_hoat_tai_khoan_khach_hang', ['hash_active' => $this->hash_active, 'name' => $this->name]);
+        return $this->subject("Trở thành nhà cung cấp dịch vụ tại Multi Booking Service")->view('mail_kich_hoat_tai_khoan_ncc', ['hash_active' => $this->hash_active, 'name' => $this->name]);
     }
 }
