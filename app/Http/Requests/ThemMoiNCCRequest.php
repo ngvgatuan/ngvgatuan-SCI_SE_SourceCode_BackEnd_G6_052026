@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ThemMoiKhachHangRequest extends FormRequest
+class ThemMoiNCCRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,16 +23,16 @@ class ThemMoiKhachHangRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ten_khach_hang' => 'required| min: 4| max: 100',
-            'so_dien_thoai'  => 'required| digits: 10| unique:khach_hangs,so_dien_thoai|unique:nha_cung_caps,so_dien_thoai',
-            'email'          => 'required| email| unique:khach_hangs,email|unique:nha_cung_caps,email',
-            'password'       => 'required| min: 8|max:50',
+            'ten_nha_cung_cap' => 'required| min: 4| max: 100',
+            'so_dien_thoai'    => 'required| digits: 10| unique:khach_hangs,so_dien_thoai|unique:nha_cung_caps,so_dien_thoai',
+            'email'            => 'required| email| unique:khach_hangs,email|unique:nha_cung_caps,email',
+            'password'         => 'required| min: 8|max:50',
         ];
     }
     public function messages()
     {
         return [
-            'ten_khach_hang.*' => 'tên phải từ 4 đến 100 kí tự',
+            'ten_nha_cung_cap.*' => 'tên phải từ 4 đến 100 kí tự',
             'so_dien_thoai.*'  => 'Số điện thoại không đúng hoặc đã được sử dụng',
             'email.*'          => 'Email không đúng định dạng',
             'password.*'       => 'Mật khẩu phải từ 8 đến 50 kí tự',

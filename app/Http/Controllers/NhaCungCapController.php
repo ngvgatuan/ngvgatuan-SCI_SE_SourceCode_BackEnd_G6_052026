@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ThemMoiNCCRequest;
+use App\Mail\KichHoatTaiKhoan;
+use App\Mail\KichHoatTaiKhoanNCC;
 use App\Models\NhaCungCap;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class NhaCungCapController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function kichHoat($hash_active)
     {
-        //
+        $NhaCungCap = NhaCungCap::where('hash_active', $hash_active)->first();
+        if (!$NhaCungCap) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tài khoản không tồn tại'
+            ]);
+        } else if ($NhaCungCap->is_active == 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tài khoản đã được kích hoạt trước đó'
+            ]);
+        } else {
+            $NhaCungCap->is_active = 1;
+            $NhaCungCap->hash_active = null;
+            $NhaCungCap->save();
+            return redirect('http://localhost:3000/'); //route tới trang xác nhận thành công nhé
+            //     return response()->json([
+            //         'status' => true,
+            //         'message' => 'Kích hoạt tài khoản thành công!'
+            //     ]);
+        }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(ThemMoiNCCRequest $request)
     {
-        //
-    }
+        $ncc = NhaCungCap::create([
+            'ten_nha_cung_cap' => $request->ten_nha_cung_cap,
+            'so_dien_thoai'  => $request->so_dien_thoai,
+            'email'          => $request->email,
+            'password'       => bcrypt($request->password),
+            'hash_active'    => Str::uuid(),
+        ]);
+        Mail::to($ncc->email)->send(new KichHoatTaiKhoanNCC($ncc->hash_active, $ncc->ten_nha_cung_cap));
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(NhaCungCap $nhaCungCap)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(NhaCungCap $nhaCungCap)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, NhaCungCap $nhaCungCap)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(NhaCungCap $nhaCungCap)
-    {
-        //
+        return response()->json([
+            'message' => 'Tạo tài khoản thành công!',
+            'status'  => true
+        ]);
     }
 }
