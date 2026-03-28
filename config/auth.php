@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\KhachHang;
+use App\Models\NhaCungCap;
 use App\Models\User;
 
 return [
@@ -42,6 +44,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+         'khach_hang' => [
+            'driver' => 'session',
+            'provider' => 'khach_hang',
+        ],
+          'nha_cung_cap' => [
+            'driver' => 'session',
+            'provider' => 'nha_cung_cap',
+        ],
     ],
 
     /*
@@ -66,6 +76,15 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
+         'khach_hang' => [
+            'driver' => 'eloquent',
+            'model' =>  KhachHang::class,
+        ],
+         'nha_cung_cap' => [
+            'driver' => 'eloquent',
+            'model' =>  NhaCungCap::class,
+        ],
+
 
         // 'users' => [
         //     'driver' => 'database',
