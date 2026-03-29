@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ThemMoiNCCRequest;
 use App\Mail\KichHoatTaiKhoan;
 use App\Mail\KichHoatTaiKhoanNCC;
+use App\Mail\QuenMatKhau;
 use App\Models\NhaCungCap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,40 @@ use Illuminate\Support\Str;
 
 class NhaCungCapController extends Controller
 {
+    public function quenMatKhau(Request $request)
+    {
+        $NhaCungCap =  NhaCungCap::when($request->email, function ($query) use ($request) {
+            $query->where('email', $request->email);
+        })
+            ->when($request->so_dien_thoai, function ($query) use ($request) {
+                $query->where('so_dien_thoai', $request->so_dien_thoai);
+            })
+            ->first();
+        if ($NhaCungCap) {
+            $new_password = str::random(8);
+            $NhaCungCap->password = bcrypt($new_password);
+            $NhaCungCap->save();
+            Mail::to($NhaCungCap->email)->send(new QuenMatKhau($new_password, $NhaCungCap->ten_nha_cung_cap));
+            return response()->json([
+                'message' => 'Đã cấp lại mật khẩu mới, vui lòng kiểm tra email!',
+                'status'  => true
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Email sai hoặc chưa đăng ký trên hệ thống!',
+                'status'  => false
+            ]);
+        }
+    }
+
+    public function dangXuat(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => "Đã đăng xuất thành công"
+        ]);
+    }
     public function dangNhap(Request $request)
     {
         $check = Auth::guard('nha_cung_cap')->attempt([
@@ -38,7 +73,8 @@ class NhaCungCapController extends Controller
                     'message'   =>   'Đã đăng nhập thành công!',
                     'status'    =>   1,
                     'chia_khoa' =>   $user->createToken('ma_so_bi_mat_ncc')->plainTextToken,
-                    'ten_kh'    =>   $user->ten_nha_cung_cap
+                    'ten_ncc'   =>   $user->ten_nha_cung_cap,
+                    'role'      =>   "nha_cung_cap"
                 ]);
             }
         } else {
