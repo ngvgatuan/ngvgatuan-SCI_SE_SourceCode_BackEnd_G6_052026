@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -41,5 +42,25 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (ThrottleRequestsException $e, $request) {
+
+            $seconds = $e->getHeaders()['Retry-After'] ?? 60;
+
+            $hours = floor($seconds / 3600);
+            $minutes = floor(($seconds % 3600) / 60);
+            $remainSeconds = $seconds % 60;
+
+            if ($hours > 0) {
+                $message = "Vui lòng đợi {$hours} giờ {$minutes} phút để yêu cầu lại!";
+            } elseif ($minutes > 0) {
+                $message = "Vui lòng đợi {$minutes} phút {$remainSeconds} giây để yêu cầu lại!";
+            } else {
+                $message = "Vui lòng đợi {$remainSeconds} giây để yêu cầu lại!";
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => $message
+            ], 429);
+        });
     })->create();

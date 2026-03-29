@@ -34,7 +34,7 @@ class ThemMoiKhachHangRequest extends FormRequest
         return [
             'ten_khach_hang.*' => 'tên phải từ 4 đến 100 kí tự',
             'so_dien_thoai.*'  => 'Số điện thoại không đúng hoặc đã được sử dụng',
-            'email.*'          => 'Email không đúng định dạng',
+            'email.*'          => 'Email đã được sử dụng hoặc không đúng định dạng',
             'password.*'       => 'Mật khẩu phải từ 8 đến 50 kí tự',
         ];
     }

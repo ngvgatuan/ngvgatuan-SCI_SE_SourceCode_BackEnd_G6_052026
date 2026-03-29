@@ -4,14 +4,49 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ThemMoiKhachHangRequest;
 use App\Mail\KichHoatTaiKhoan;
+use App\Mail\QuenMatKhau;
 use App\Models\KhachHang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class KhachHangController extends Controller
 {
+    public function quenMatKhau(Request $request)
+    {
+        $KhachHang =  KhachHang::when($request->email, function ($query) use ($request) {
+            $query->where('email', $request->email);
+        })
+            ->when($request->so_dien_thoai, function ($query) use ($request) {
+                $query->where('so_dien_thoai', $request->so_dien_thoai);
+            })
+            ->first();
+        if ($KhachHang) {
+            $new_password = str::random(8);
+            $KhachHang->password = bcrypt($new_password);
+            $KhachHang->save();
+            Mail::to($KhachHang->email)->send(new QuenMatKhau($new_password, $KhachHang->ten_khach_hang));
+            return response()->json([
+                'message' => 'Đã cấp lại mật khẩu mới, vui lòng kiểm tra email!',
+                'status'  => true
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Email sai hoặc chưa đăng ký trên hệ thống!',
+                'status'  =>false
+            ]);
+        }
+    }
+    public function dangXuat(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => "Đã đăng xuất thành công"
+        ]);
+    }
     public function dangNhap(Request $request)
     {
         $check = Auth::guard('khach_hang')->attempt([
@@ -37,7 +72,8 @@ class KhachHangController extends Controller
                     'message'   =>   'Đã đăng nhập thành công!',
                     'status'    =>   1,
                     'chia_khoa' =>   $user->createToken('ma_so_bi_mat_khach_hang')->plainTextToken,
-                    'ten_kh'    =>   $user->ten_khach_hang
+                    'ten_kh'    =>   $user->ten_khach_hang,
+                    'role'      =>   "khach_hang"
                 ]);
             }
         } else {
